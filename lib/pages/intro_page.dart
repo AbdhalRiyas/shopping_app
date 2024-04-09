@@ -1,17 +1,26 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopping_app_treinetic/pages/main_screen.dart';
+import 'package:shopping_app_treinetic/services/product_services.dart';
 
 class IntroPage extends StatelessWidget {
   const IntroPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Timer(
-        Duration(seconds: 1),
-        () => Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => MainScreen())));
+    Provider.of<ProductService>(context, listen: false)
+        .getAllProducts(context: context)
+        .whenComplete(() {
+      Provider.of<ProductService>(context, listen: false)
+          .getCatagories(context: context)
+          .whenComplete(() {
+            Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => MainScreen(),
+          ),
+          (route) => false);
+          });
+    });
     return const Scaffold(
         backgroundColor: Color.fromARGB(255, 192, 58, 49),
         body: Column(

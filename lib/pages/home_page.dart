@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopping_app_treinetic/components/product_card.dart';
+import 'package:shopping_app_treinetic/services/product_services.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -16,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             Image.asset('assets/images/homeimg.png'),
-            const ProductCard(),
+           ProductCard(productList: Provider.of<ProductService>(context).productList),
           ],
         ),
       ),

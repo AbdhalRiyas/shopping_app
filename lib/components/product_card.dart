@@ -1,44 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopping_app_treinetic/models/product.dart';
 import 'package:shopping_app_treinetic/pages/product_detail_screen.dart';
-
-// class ProductCard extends StatelessWidget {
-//   const ProductCard({
-//     Key? key,
-//     required this.product,
-//   }) : super(key: key);
-
-//   final Product product;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       child: Padding(
-//         padding: const EdgeInsets.all(8.0),
-//         child: Column(
-//           children: [
-//             Image.network(
-//                 product.imageUrl),
-//             Text(product.title),
-//             Text(product.price),
-//             Text(product.category),
-//             Row(
-//               children: [
-//                 for (int i = 0; i < product.rating; i++)
-//                   const Icon(Icons.star, color: Colors.amber),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+import 'package:shopping_app_treinetic/services/product_services.dart';
 
 class ProductCard extends StatelessWidget {
-  // title, product image, price, category and rate.
+  final List<Product> productList;
   const ProductCard({
     super.key,
+    required this.productList,
   });
 
   @override
@@ -50,7 +20,7 @@ class ProductCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 20),
+              padding: const EdgeInsets.only(top: 20, left: 20),
               child: Text(
                 "All Products",
                 style: TextStyle(
@@ -66,15 +36,9 @@ class ProductCard extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: List.generate(
-              product.length,
+              productList.length,
               (index) => GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ProductDetailsScreen(product: product[index]),
-                  ),
-                ),
+                onTap: () {Provider.of<ProductService>(context, listen: false).getProduct(context: context, id: productList[index].id!).whenComplete((){ Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDetailsScreen()));});},
                 child: Container(
                   margin: const EdgeInsets.only(right: 10, left: 20),
                   width: 250,
@@ -89,7 +53,7 @@ class ProductCard extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
                               image: DecorationImage(
-                                image: Image.network(product[index].imageUrl)
+                                image: Image.network(productList[index].image!)
                                     .image,
                                 fit: BoxFit.fill,
                               ),
@@ -97,7 +61,7 @@ class ProductCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            product[index].title,
+                            productList[index].title.toString(),
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -107,7 +71,7 @@ class ProductCard extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                "${product[index].price}",
+                                "\$ ${productList[index].price}",
                                 style: const TextStyle(
                                   fontSize: 20,
                                   color: Colors.black,
@@ -118,7 +82,7 @@ class ProductCard extends StatelessWidget {
                           Row(
                             children: [
                               Text(
-                                product[index].category,
+                                productList[index].category.toString(),
                                 style: TextStyle(
                                   fontSize: 15,
                                   color: Colors.grey[600],
@@ -128,11 +92,13 @@ class ProductCard extends StatelessWidget {
                           ),
                           Row(
                             children: [
-                              for (int i = 0; i < product[index].rating; i++)
+                              for (int i = 0;
+                                  i < productList[index].rating!.rate!.toInt();
+                                  i++)
                                 const Icon(Icons.star, color: Colors.amber),
                               Text(
-                                "  ${product[index].rating}",
-                                style: TextStyle(fontSize: 15),
+                                "  ${productList[index].rating!.rate}",
+                                style: const TextStyle(fontSize: 15),
                               ),
                             ],
                           ),

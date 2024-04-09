@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopping_app_treinetic/models/product.dart';
+import 'package:shopping_app_treinetic/services/product_services.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
-  final Product product;
   const ProductDetailsScreen({
     Key? key,
-    required this.product,
   }) : super(key: key);
 
   @override
@@ -16,7 +16,7 @@ class ProductDetailsScreen extends StatefulWidget {
 class __ProductDetailsScreenStateState extends State<ProductDetailsScreen>
     with TickerProviderStateMixin {
   late ScrollController _scrollController;
-
+  Product product = Product();
   @override
   void initState() {
     super.initState();
@@ -24,6 +24,7 @@ class __ProductDetailsScreenStateState extends State<ProductDetailsScreen>
     _scrollController.addListener(() {
       changeAppBarColor(_scrollController);
     });
+    product = Provider.of<ProductService>(context, listen: false).product;
   }
 
   Color appBarColor = Colors.transparent;
@@ -119,7 +120,7 @@ class __ProductDetailsScreenStateState extends State<ProductDetailsScreen>
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: NetworkImage(widget.product.imageUrl),
+                      image: NetworkImage(product.image.toString()),
                       fit: BoxFit.contain)),
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
@@ -140,7 +141,7 @@ class __ProductDetailsScreenStateState extends State<ProductDetailsScreen>
                 Container(
                   margin: const EdgeInsets.only(bottom: 5, top: 5),
                   child: Text(
-                    widget.product.title,
+                    product.title.toString(),
                     style: const TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w600,
@@ -153,7 +154,7 @@ class __ProductDetailsScreenStateState extends State<ProductDetailsScreen>
                     Row(
                       children: [
                         Text(
-                          "${widget.product.price} ",
+                          "${product.price} ",
                           style: const TextStyle(
                               fontSize: 25, fontWeight: FontWeight.w500),
                         ),
@@ -166,7 +167,7 @@ class __ProductDetailsScreenStateState extends State<ProductDetailsScreen>
                     Container(
                       margin: const EdgeInsets.only(left: 5),
                       child: Text(
-                        widget.product.category,
+                        product.category.toString(),
                         style: const TextStyle(
                             fontSize: 16, color: Colors.black38),
                       ),
@@ -175,10 +176,10 @@ class __ProductDetailsScreenStateState extends State<ProductDetailsScreen>
                 ),
                 Row(
                   children: [
-                    for (int i = 0; i < widget.product.rating; i++)
+                    for (int i = 0; i < product.rating!.rate!.toInt(); i++)
                       const Icon(Icons.star, color: Colors.amber),
                     Text(
-                      "  ${widget.product.rating}",
+                      "  ${product.rating!.rate}",
                       style: const TextStyle(fontSize: 15),
                     ),
                   ],
@@ -201,7 +202,7 @@ class __ProductDetailsScreenStateState extends State<ProductDetailsScreen>
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  widget.product.description,
+                  product.description.toString(),
                   style: const TextStyle(
                     fontSize: 18,
                     color: Colors.black87,
